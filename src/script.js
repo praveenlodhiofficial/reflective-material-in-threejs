@@ -33,6 +33,50 @@ window.addEventListener('resize', () =>
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
 
+
+/**
+ * Texture
+ */
+const textureLoader = new THREE.TextureLoader();
+
+const doorColorTexture = textureLoader.load("/textures/door/color.jpg")
+const doorAlphaTexture = textureLoader.load("/textures/door/alpha.jpg")
+const doorAmbientOcclusionTexture = textureLoader.load("/textures/door/ambientOcclusion.jpg")
+const doorHeightTexture = textureLoader.load("/textures/door/height.jpg")
+const doorNormalTexture = textureLoader.load("/textures/door/normal.jpg")
+const doorMetalnessTexture = textureLoader.load("/textures/door/metalness.jpg")
+
+doorColorTexture.colorSpace =THREE.SRGBColorSpace;
+
+
+
+/**
+ * object/Material 
+ */
+
+
+const material = new THREE.MeshBasicMaterial();
+material.map = doorColorTexture; 
+
+
+
+
+
+// Adding Objects in Canvas
+
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
+scene.add(plane);
+
+const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
+sphere.position.x = -1.5;
+scene.add(sphere);
+
+const torus = new THREE.Mesh(new THREE.SphereGeometry(0.3, 0.2, 16, 32), material);
+torus.position.x = 1.5;
+ scene.add(torus);
+
+
+
 /**
  * Camera
  */
@@ -64,6 +108,13 @@ const clock = new THREE.Clock()
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
+
+    plane.rotation.x = elapsedTime * 0.3;
+    plane.rotation.y = elapsedTime * 0.3;
+    sphere.rotation.x = elapsedTime * 0.3;
+    sphere.rotation.y = elapsedTime * 0.3;
+    torus.rotation.x = elapsedTime * 0.3;
+    torus.rotation.y = elapsedTime * 0.3;
 
     // Update controls
     controls.update()
