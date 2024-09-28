@@ -137,8 +137,13 @@ const material = new THREE.MeshStandardMaterial(); // It give cartoonish Effect
 material.side = THREE.DoubleSide; // Render both sides of the material (front and back faces)
 // const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); 
 // scene.add(ambientLight);
-// const pointLight = new THREE.PointLight(0xffffff, 5);  // default place in center of material or canvas
-// scene.add(pointLight); 
+const pointLight = new THREE.PointLight(0xffffff, 5);  // default place in center of material or canvas
+pointLight.intensity = 0.05; 
+pointLight.color.set(0xFFD700); // Set the light color to gold
+
+
+
+scene.add(pointLight); 
 material.metalness = 0.5;
 material.roughness = 0.15;
 material.map = doorColorTexture; 
@@ -207,7 +212,7 @@ const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
 
-    plane.rotation.x = elapsedTime * 0.3;
+    plane.rotation.x = elapsedTime * 0.9;
     plane.rotation.y = elapsedTime * 0.3;
     sphere.rotation.x = elapsedTime * 0.3;
     sphere.rotation.y = elapsedTime * 0.3;
