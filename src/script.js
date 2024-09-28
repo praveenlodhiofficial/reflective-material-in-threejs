@@ -1,5 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+
 
 /**
  * Base
@@ -49,8 +51,19 @@ const doorMetalnessTexture = textureLoader.load("/textures/door/metalness.jpg")
 doorColorTexture.colorSpace =THREE.SRGBColorSpace;
 
 // ----------------------> LOADING MATCAPS
-const matcap = textureLoader.load("/textures/matcaps/2.png");
-matcap.colorSpace = THREE.SRGBColorSpace;
+const matcap = textureLoader.load("/textures/matcaps/2.png"); // Load matcap texture
+matcap.colorSpace = THREE.SRGBColorSpace; // Set the color space to SRGB
+
+// ----------------------> LOADING GRADIENT
+const gradient = textureLoader.load("/textures/gradients/3.jpg"); // Load gradient texture
+gradient.magFilter = THREE.NearestFilter; // Set magnification filter to nearest
+gradient.minFilter = THREE.NearestFilter; // Set minification filter to nearest
+gradient.generateMipmaps = false; // Disable mipmaps generation
+
+
+
+
+
 
 
 /**
@@ -88,11 +101,20 @@ matcap.colorSpace = THREE.SRGBColorSpace;
 
 // ----------------------> LAMBERT MATERIAL
 
-const material = new THREE.MeshLambertMaterial();  // Performance oriented required light source
-const ambientLight = new THREE.AmbientLight(0xffffff, 1); 
-scene.add(ambientLight);
-const pointLight = new THREE.PointLight(0xffffff, 30);  // default place in center of material or canvas
-scene.add(pointLight); 
+// const material = new THREE.MeshLambertMaterial();  // Performance oriented required light source
+// const ambientLight = new THREE.AmbientLight(0xffffff, 1); 
+// scene.add(ambientLight);
+// const pointLight = new THREE.PointLight(0xffffff, 30);  // default place in center of material or canvas
+// scene.add(pointLight); 
+
+// ----------------------> TOON MATERIAL
+
+// const material = new THREE.MeshToonMaterial(); // It give cartoonish Effect
+// material.gradientMap = gradient;
+// const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); 
+// scene.add(ambientLight);
+// const pointLight = new THREE.PointLight(0xffffff, 5);  // default place in center of material or canvas
+// scene.add(pointLight); 
 
 
 
@@ -102,12 +124,13 @@ const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
 scene.add(plane);
 
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
-sphere.position.x = -1.5;
+sphere.position.x = -1.4;
 scene.add(sphere);
 
-const torus = new THREE.Mesh(new THREE.SphereGeometry(0.3, 0.2, 16, 32), material);
-torus.position.x = 1.5;
+const torus = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.2, 16, 32), material);
+torus.position.x = 1.4;
  scene.add(torus);
+
 
 
 
