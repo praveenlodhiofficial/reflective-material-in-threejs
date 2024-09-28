@@ -1,6 +1,13 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import GUI from 'lil-gui';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+
+
+/**
+ * GUI
+ */
+const gui = new GUI();    // to initiate the controller on the Canvas
 
 
 /**
@@ -62,10 +69,6 @@ gradient.generateMipmaps = false; // Disable mipmaps generation
 
 
 
-
-
-
-
 /**
  * object/Material 
  */
@@ -116,6 +119,19 @@ gradient.generateMipmaps = false; // Disable mipmaps generation
 // const pointLight = new THREE.PointLight(0xffffff, 5);  // default place in center of material or canvas
 // scene.add(pointLight); 
 
+// ---------------------->STANDARD MATERIAL
+
+const material = new THREE.MeshStandardMaterial(); // It give cartoonish Effect
+material.side = THREE.DoubleSide; // Render both sides of the material (front and back faces)
+// const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); 
+// scene.add(ambientLight);
+// const pointLight = new THREE.PointLight(0xffffff, 5);  // default place in center of material or canvas
+// scene.add(pointLight); 
+material.metalness = 0.5;
+material.roughness = 0.15;
+
+gui.add(material, "roughness").min(0).max(1);
+gui.add(material, "metalness").min(0).max(1);
 
 
 // Adding Objects in Canvas
