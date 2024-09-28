@@ -67,6 +67,18 @@ gradient.magFilter = THREE.NearestFilter; // Set magnification filter to nearest
 gradient.minFilter = THREE.NearestFilter; // Set minification filter to nearest
 gradient.generateMipmaps = false; // Disable mipmaps generation
 
+// ----------------------> RGBE LOADER
+const rgbeLoader = new RGBELoader(); // Used to load the environment map
+rgbeLoader.load("/textures/environmentMap/2k.hdr", (environmentMap) => {
+    // console.log(enviromentMap);  // Check if the environment map loads properly
+    environmentMap.mapping = THREE.EquirectangularReflectionMapping; // it make a one enviroment including model or object and the background to rotate as one in enviroment
+    scene.background = environmentMap; // Set the environment map as the scene background
+    scene.environment = environmentMap; // Optionally set it as the scene environment
+});
+
+
+
+
 
 
 /**
@@ -129,6 +141,19 @@ material.side = THREE.DoubleSide; // Render both sides of the material (front an
 // scene.add(pointLight); 
 material.metalness = 0.5;
 material.roughness = 0.15;
+material.map = doorColorTexture; 
+material.transparent = true; // Enable transparency for the material
+material.aoMap = doorAmbientOcclusionTexture; //to make object little dark not faded
+material.alphaMap = doorAlphaTexture; // Apply an alpha map texture to control the transparency also it does not put only the texture given on object and unnecessary part cutout. 
+
+// material.displacementMap = doorHeightTexture;     //used to bulge out surface of objects to look more real but it more loading so instesd to this we can use  normal  texture (line 151)
+// material.displacementScale = 0.15;
+
+material.normalMap = doorNormalTexture; //used to bulge out surface of objects to look more real act as a substitute of displacement map.
+material.normalScale.x = 0.9;
+material.normalScale.y = 0.9;
+
+
 
 gui.add(material, "roughness").min(0).max(1);
 gui.add(material, "metalness").min(0).max(1);
