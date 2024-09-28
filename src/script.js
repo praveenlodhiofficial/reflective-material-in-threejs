@@ -48,17 +48,51 @@ const doorMetalnessTexture = textureLoader.load("/textures/door/metalness.jpg")
 
 doorColorTexture.colorSpace =THREE.SRGBColorSpace;
 
+// ----------------------> LOADING MATCAPS
+const matcap = textureLoader.load("/textures/matcaps/2.png");
+matcap.colorSpace = THREE.SRGBColorSpace;
 
 
 /**
  * object/Material 
  */
 
+// ----------------------> ADDING MATERIAL & TEXTURE TO IT
 
-const material = new THREE.MeshBasicMaterial();
-material.map = doorColorTexture; 
+// const material = new THREE.MeshBasicMaterial();
+// material.map = doorColorTexture; 
 
+// ----------------------> ADDING COLOR TO MATERIAL
 
+// material.color = new THREE.Color("#ff00ff"); // Set the material color to magenta
+// material.wireframe = true; // Render the material as a wireframe
+// material.transparent = true; // Enable transparency for the material
+// material.opacity = 0.5; // Set the material's opacity to 50%
+
+// ----------------------> ALPHA MAPPING
+
+// material.transparent = true; // Enable transparency for the material
+// material.alphaMap = doorAlphaTexture; // Apply an alpha map texture to control the transparency also it does not put only the texture given on object and unnecessary part cutout. 
+// material.side = THREE.DoubleSide; // Render both sides of the material (front and back faces)
+
+// ----------------------> MESH NORMAL MATERIAL 
+
+// const material = new THREE.MeshNormalMaterial();
+// material.wireframe = true; // Render the material as a wireframe
+// material.flatShading = true; // Render the material as a flat shading
+
+// ----------------------> MATCAPS 
+
+// material.matcap = matcap; // Apply a matcap texture to control the appearance of the material
+// material.side = THREE.DoubleSide;
+
+// ----------------------> LAMBERT MATERIAL
+
+const material = new THREE.MeshLambertMaterial();  // Performance oriented required light source
+const ambientLight = new THREE.AmbientLight(0xffffff, 1); 
+scene.add(ambientLight);
+const pointLight = new THREE.PointLight(0xffffff, 30);  // default place in center of material or canvas
+scene.add(pointLight); 
 
 
 
