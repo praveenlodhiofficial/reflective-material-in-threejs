@@ -9,6 +9,10 @@ import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
  */
 const gui = new GUI();    // to initiate the controller on the Canvas
 
+const options = {
+    environment: 'City Night', // Default environment map
+};
+
 
 /**
  * Base
@@ -27,8 +31,7 @@ const sizes = {
     height: window.innerHeight
 }
 
-window.addEventListener('resize', () =>
-{
+window.addEventListener('resize', () => {
     // Update sizes
     sizes.width = window.innerWidth
     sizes.height = window.innerHeight
@@ -55,7 +58,7 @@ const doorHeightTexture = textureLoader.load("/textures/door/height.jpg")
 const doorNormalTexture = textureLoader.load("/textures/door/normal.jpg")
 const doorMetalnessTexture = textureLoader.load("/textures/door/metalness.jpg")
 
-doorColorTexture.colorSpace =THREE.SRGBColorSpace;
+doorColorTexture.colorSpace = THREE.SRGBColorSpace;
 
 // ----------------------> LOADING MATCAPS
 const matcap = textureLoader.load("/textures/matcaps/2.png"); // Load matcap texture
@@ -67,14 +70,38 @@ gradient.magFilter = THREE.NearestFilter; // Set magnification filter to nearest
 gradient.minFilter = THREE.NearestFilter; // Set minification filter to nearest
 gradient.generateMipmaps = false; // Disable mipmaps generation
 
-// ----------------------> RGBE LOADER
+// ----------------------> ENVIROMENT MAP OPTIONS
+const envMaps = {
+    "City Center": "/textures/environmentMap/2k.hdr",
+    "Closed Room": "/textures/environmentMap/3k.hdr",
+    "Suburbs": "/textures/environmentMap/4k.hdr",
+    "City Night": "/textures/environmentMap/5k.hdr",
+    "Forest": "/textures/environmentMap/6k.hdr",
+};
+
+// ----------------------> RGBE LOADER & LOADING ENVIROMENT MAPS
 const rgbeLoader = new RGBELoader(); // Used to load the environment map
-rgbeLoader.load("/textures/environmentMap/2k.hdr", (environmentMap) => {
-    // console.log(enviromentMap);  // Check if the environment map loads properly
-    environmentMap.mapping = THREE.EquirectangularReflectionMapping; // it make a one enviroment including model or object and the background to rotate as one in enviroment
-    scene.background = environmentMap; // Set the environment map as the scene background
-    scene.environment = environmentMap; // Optionally set it as the scene environment
-});
+const loadEnvironmentMap = (path) => {
+    rgbeLoader.load(path, (environmentMap) => {
+        // console.log(enviromentMap);  // Check if the environment map loads properly
+        environmentMap.mapping = THREE.EquirectangularReflectionMapping; // it make a one enviroment including model or object and the background to rotate as one in enviroment
+        scene.background = environmentMap; // Set the environment map as the scene background
+        scene.environment = environmentMap; // Optionally set it as the scene environment
+    });
+};
+
+// Initial environment map
+loadEnvironmentMap(envMaps[options.environment]);
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -138,15 +165,15 @@ material.side = THREE.DoubleSide; // Render both sides of the material (front an
 // const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); 
 // scene.add(ambientLight);
 const pointLight = new THREE.PointLight(0xffffff, 5);  // default place in center of material or canvas
-pointLight.intensity = 0.05; 
+pointLight.intensity = 0.05;
 pointLight.color.set(0xFFD700); // Set the light color to gold
 
 
 
-scene.add(pointLight); 
+scene.add(pointLight);
 material.metalness = 0.5;
-material.roughness = 0.15;
-material.map = doorColorTexture; 
+material.roughness = 0.18;
+material.map = doorColorTexture;
 material.transparent = true; // Enable transparency for the material
 material.aoMap = doorAmbientOcclusionTexture; //to make object little dark not faded
 material.alphaMap = doorAlphaTexture; // Apply an alpha map texture to control the transparency also it does not put only the texture given on object and unnecessary part cutout. 
@@ -158,24 +185,27 @@ material.normalMap = doorNormalTexture; //used to bulge out surface of objects t
 material.normalScale.x = 0.9;
 material.normalScale.y = 0.9;
 
-
-
+// GUI Controls Settings
 gui.add(material, "roughness").min(0).max(1);
 gui.add(material, "metalness").min(0).max(1);
+gui.add(options, 'environment', Object.keys(envMaps)).onChange((value) => {
+    loadEnvironmentMap(envMaps[value]);
+});
 
 
 // Adding Objects in Canvas
 
-const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 1.2), material);
+plane.position.x = 1.4;
 scene.add(plane);
 
-const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
+const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.7, 20, 20), material);
 sphere.position.x = -1.4;
 scene.add(sphere);
 
-const torus = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.2, 16, 32), material);
-torus.position.x = 1.4;
- scene.add(torus);
+const torus = new THREE.Mesh(new THREE.TorusGeometry(1.4, 1, 16, 32), material);
+torus.position.z = -10;
+scene.add(torus);
 
 
 
@@ -185,9 +215,9 @@ torus.position.x = 1.4;
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = 1
-camera.position.y = 1
-camera.position.z = 2
+camera.position.x = 0
+camera.position.y = -0.5
+camera.position.z = 2.9
 scene.add(camera)
 
 // Controls
@@ -208,16 +238,15 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  */
 const clock = new THREE.Clock()
 
-const tick = () =>
-{
+const tick = () => {
     const elapsedTime = clock.getElapsedTime()
 
-    plane.rotation.x = elapsedTime * 0.9;
-    plane.rotation.y = elapsedTime * 0.3;
-    sphere.rotation.x = elapsedTime * 0.3;
+    plane.rotation.x = elapsedTime * 0.4;
+    plane.rotation.y = elapsedTime * 0.4;
+    sphere.rotation.x = elapsedTime * 0.6;
     sphere.rotation.y = elapsedTime * 0.3;
-    torus.rotation.x = elapsedTime * 0.3;
-    torus.rotation.y = elapsedTime * 0.3;
+    torus.rotation.x = elapsedTime * 0.4;
+    torus.rotation.y = elapsedTime * 0.8;
 
     // Update controls
     controls.update()
